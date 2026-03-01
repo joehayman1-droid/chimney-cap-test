@@ -7,38 +7,10 @@
 
   <style>
     /* =========================
-       THEME (Dark default + toggle)
+       THEME (Light default + toggle)
        ========================= */
     :root{
-      --bg0:#07090d;
-      --bg1:#0b0f16;
-      --bg2:#0f1117;
-      --card:#131826;
-      --card2:#0f1420;
-      --line: rgba(255,255,255,.10);
-      --line2: rgba(255,255,255,.14);
-      --muted:#aab4c5;
-      --text:#eef2ff;
-
-      --accent:#e11d2e;    /* HY-C red */
-      --accent2:#ff4656;
-
-      --ok:#22c55e;
-      --warn:#f59e0b;
-      --bad:#ef4444;
-
-      --shadow: 0 18px 40px rgba(0,0,0,.45);
-      --shadow2: 0 10px 26px rgba(0,0,0,.35);
-
-      --radius: 18px;
-      --radius2: 14px;
-
-      /* Diamond mesh watermark */
-      --meshA: rgba(255,255,255,.06);
-      --meshB: rgba(225,29,46,.05);
-    }
-
-    [data-theme="light"]{
+      /* Light (default) */
       --bg0:#f7f8fb;
       --bg1:#f1f4f9;
       --bg2:#eef2f7;
@@ -49,11 +21,40 @@
       --muted:#52607a;
       --text:#111827;
 
+      --accent:#e11d2e;    /* HY-C red */
+      --accent2:#ff4656;
+
+      --ok:#16a34a;
+      --warn:#d97706;
+      --bad:#dc2626;
+
       --shadow: 0 18px 40px rgba(15,23,42,.12);
       --shadow2: 0 10px 26px rgba(15,23,42,.10);
 
-      --meshA: rgba(0,0,0,.06);
+      --radius: 18px;
+      --radius2: 14px;
+
+      /* Diamond mesh watermark */
+      --meshA: rgba(0,0,0,.05);
       --meshB: rgba(225,29,46,.06);
+    }
+
+    [data-theme="dark"]{
+      --bg0:#07090d;
+      --bg1:#0b0f16;
+      --bg2:#0f1117;
+      --card:#131826;
+      --card2:#0f1420;
+      --line: rgba(255,255,255,.10);
+      --line2: rgba(255,255,255,.14);
+      --muted:#aab4c5;
+      --text:#eef2ff;
+
+      --shadow: 0 18px 40px rgba(0,0,0,.45);
+      --shadow2: 0 10px 26px rgba(0,0,0,.35);
+
+      --meshA: rgba(255,255,255,.06);
+      --meshB: rgba(225,29,46,.05);
     }
 
     *{box-sizing:border-box}
@@ -63,14 +64,13 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
       background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(225,29,46,.28), transparent 60%),
-        radial-gradient(900px 600px at 90% 10%, rgba(255,70,86,.18), transparent 55%),
+        radial-gradient(1200px 600px at 20% -10%, rgba(225,29,46,.18), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(255,70,86,.10), transparent 55%),
         linear-gradient(180deg, var(--bg0), var(--bg1) 30%, var(--bg2));
       overflow-x:hidden;
       position:relative;
     }
 
-    /* Subtle diamond mesh watermark across the whole page */
     body::before{
       content:"";
       position:fixed;
@@ -98,7 +98,6 @@
       position:sticky; top:0; z-index:20;
       backdrop-filter: blur(12px);
       background: transparent;
-      border-bottom:0;
       padding:10px 0;
     }
 
@@ -124,7 +123,6 @@
       min-width:0;
     }
 
-    /* Lightweight logo badge */
     .logo-badge{
       display:inline-flex;
       align-items:center;
@@ -154,7 +152,19 @@
 
     .titleblock{
       min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
+
+    .title-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+      flex-wrap:wrap;
+    }
+
     .titleblock h1{
       margin:0;
       font-size:15px;
@@ -164,12 +174,33 @@
       text-overflow:ellipsis;
     }
     .titleblock p{
-      margin:6px 0 0;
+      margin:0;
       color:var(--muted);
       font-size:12.5px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+    }
+
+    .mode-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--bg2) 75%, transparent);
+      box-shadow: var(--shadow2);
+      font-weight:950;
+      font-size:12px;
+      color: color-mix(in oklab, var(--text) 92%, var(--muted));
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+    .mode-dot{
+      width:8px; height:8px; border-radius:999px;
+      background: linear-gradient(180deg, var(--accent2), var(--accent));
+      box-shadow: 0 6px 14px rgba(225,29,46,.28);
     }
 
     .header-actions{
@@ -222,14 +253,14 @@
       content:"";
       position:absolute; top:50%;
       transform:translateY(-50%);
-      left:2px;
+      left:22px; /* light = right */
       width:18px; height:18px;
       border-radius:999px;
       background: linear-gradient(180deg, var(--accent2), var(--accent));
-      box-shadow: 0 6px 14px rgba(225,29,46,.35);
+      box-shadow: 0 6px 14px rgba(225,29,46,.28);
       transition: left .18s ease;
     }
-    [data-theme="light"] .toggle .dot::after{ left:22px; }
+    [data-theme="dark"] .toggle .dot::after{ left:2px; }
 
     /* =========================
        LAYOUT
@@ -245,7 +276,7 @@
           color-mix(in oklab, var(--card2) 92%, transparent)
         );
       border:1px solid var(--line);
-      border-radius:var(--radius);
+      border-radius:18px;
       padding:14px;
       box-shadow: var(--shadow);
       position:relative;
@@ -256,8 +287,8 @@
       content:"";
       position:absolute; inset:-2px;
       background:
-        radial-gradient(600px 200px at 15% 0%, rgba(225,29,46,.18), transparent 60%),
-        radial-gradient(500px 220px at 90% 30%, rgba(255,70,86,.12), transparent 65%);
+        radial-gradient(600px 200px at 15% 0%, rgba(225,29,46,.12), transparent 60%),
+        radial-gradient(500px 220px at 90% 30%, rgba(255,70,86,.09), transparent 65%);
       pointer-events:none;
       opacity:.55;
     }
@@ -270,13 +301,39 @@
       color: color-mix(in oklab, var(--text) 92%, var(--muted));
     }
 
+    .section-title.big{
+      font-size:18px;
+      font-weight:1000;
+      letter-spacing:.25px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .title-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--bg2) 78%, transparent);
+      box-shadow: var(--shadow2);
+      font-size:12px;
+      font-weight:950;
+      color: color-mix(in oklab, var(--text) 92%, var(--muted));
+      white-space:nowrap;
+    }
+
     .row{display:grid; gap:10px}
     @media(min-width:560px){ .row{grid-template-columns: 1fr 1fr} }
 
     label{
       display:block;
       font-size:13.5px;
-      font-weight:900;
+      font-weight:950;
       letter-spacing:.15px;
       color: color-mix(in oklab, var(--text) 86%, var(--muted));
       margin:0 0 6px;
@@ -296,7 +353,7 @@
 
     select:focus,input:focus,textarea:focus{
       border-color: color-mix(in oklab, var(--accent) 70%, var(--line));
-      box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent);
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent);
     }
     textarea{min-height:90px; resize:vertical}
     input::placeholder{color: color-mix(in oklab, var(--muted) 70%, transparent)}
@@ -320,17 +377,17 @@
       border:1px solid color-mix(in oklab, var(--accent) 55%, var(--line));
       background: linear-gradient(180deg, var(--accent2), var(--accent));
       color:white;
-      font-weight:900;
+      font-weight:950;
       letter-spacing:.2px;
       cursor:pointer;
-      box-shadow: 0 12px 22px rgba(225,29,46,.22);
+      box-shadow: 0 12px 22px rgba(225,29,46,.18);
       transition: transform .06s ease;
     }
     .btn:active{transform: translateY(1px)}
     .btn.secondary{
-      background: color-mix(in oklab, var(--card) 80%, transparent);
+      background: color-mix(in oklab, var(--card) 88%, transparent);
       border:1px solid var(--line);
-      font-weight:800;
+      font-weight:900;
       box-shadow: var(--shadow2);
       color:var(--text);
     }
@@ -343,10 +400,6 @@
       font-size:13px;
       line-height:1.45;
       color: color-mix(in oklab, var(--text) 92%, var(--muted));
-      white-space:normal;
-      overflow-wrap:break-word;
-      word-break:normal;
-      hyphens:auto;
     }
 
     .hr{height:1px;background:var(--line);margin:14px 0}
@@ -365,9 +418,9 @@
       word-break:normal;
       hyphens:auto;
     }
-    .ok{border-color:rgba(34,197,94,.35)}
-    .warn{border-color:rgba(245,158,11,.35)}
-    .bad{border-color:rgba(239,68,68,.35)}
+    .ok{border-color:rgba(22,163,74,.28)}
+    .warn{border-color:rgba(217,119,6,.26)}
+    .bad{border-color:rgba(220,38,38,.26)}
 
     .kv{
       display:grid;
@@ -400,7 +453,7 @@
       font-size:12px;
       color:var(--muted);
       margin-bottom:3px;
-      font-weight:800;
+      font-weight:900;
     }
     .sku-value{
       font-weight:1000;
@@ -411,10 +464,10 @@
       padding:9px 10px;
       border-radius:12px;
       border:1px solid var(--line);
-      background: color-mix(in oklab, var(--card) 78%, transparent);
+      background: color-mix(in oklab, var(--card) 88%, transparent);
       color:var(--text);
       cursor:pointer;
-      font-weight:900;
+      font-weight:950;
       box-shadow: var(--shadow2);
       white-space:nowrap;
       flex:0 0 auto;
@@ -430,64 +483,11 @@
       padding:10px 12px;
       border-radius:14px;
       border:1px solid var(--line);
-      background: color-mix(in oklab, var(--card) 78%, transparent);
+      background: color-mix(in oklab, var(--card) 88%, transparent);
       color:var(--text);
       cursor:pointer;
-      font-weight:800;
-      box-shadow: var(--shadow2);
-    }
-
-    /* Job Summary block (inside dropdown) */
-    .job-summary{
-      border:1px solid var(--line);
-      background: color-mix(in oklab, var(--bg2) 70%, transparent);
-      border-radius:var(--radius2);
-      padding:12px;
-      box-shadow: var(--shadow2);
-    }
-    .job-summary h3{
-      margin:0 0 10px;
-      font-size:14px;
-      letter-spacing:.2px;
-    }
-    .job-summary .grid3{
-      display:grid;
-      gap:10px;
-      align-items:start;
-    }
-    @media(min-width:760px){
-      .job-summary .grid3{
-        grid-template-columns: 2fr 1fr 1fr;
-      }
-    }
-    .job-summary .grid2{
-      display:grid;
-      gap:10px;
-      align-items:start;
-    }
-    @media(min-width:760px){
-      .job-summary .grid2{
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    /* Bigger Job Name / Address box */
-    #jobName{
-      min-height:56px;
-      resize:vertical;
-    }
-
-    /* Leg kit highlight */
-    .leg-warn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(245,158,11,.38);
-      background: color-mix(in oklab, rgba(245,158,11,.18) 100%, transparent);
       font-weight:900;
-      color: color-mix(in oklab, var(--text) 95%, #000);
+      box-shadow: var(--shadow2);
     }
 
     /* Photos */
@@ -541,19 +541,19 @@
       width:16px; height:16px;
       border-radius:999px;
       border:1px solid color-mix(in oklab, var(--line2) 80%, transparent);
-      box-shadow: 0 6px 14px rgba(0,0,0,.25);
+      box-shadow: 0 6px 14px rgba(0,0,0,.18);
       flex:0 0 auto;
     }
     .finish-label{
       font-size:12px;
-      font-weight:900;
+      font-weight:950;
       color: color-mix(in oklab, var(--text) 90%, var(--muted));
       letter-spacing:.1px;
       white-space:nowrap;
     }
     .finish-option.selected{
       border-color: color-mix(in oklab, var(--accent) 55%, var(--line));
-      box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 16%, transparent), var(--shadow2);
+      box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 14%, transparent), var(--shadow2);
     }
     .finish-option input{ display:none; }
 
@@ -573,13 +573,6 @@
     }
     .bt-toprow > *{ min-width:0; }
 
-    .bt-quickrulescol{
-      min-width:320px;
-    }
-    @media(max-width:380px){
-      .bt-quickrulescol{ min-width:260px; }
-    }
-
     .checkrow{
       display:flex;
       align-items:flex-start;
@@ -596,136 +589,60 @@
       margin-top:2px;
     }
 
-    /* California code row (quiet) */
-    .cal-row{
+    /* Rare code controls (minimized) */
+    details.rare{
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--bg2) 70%, transparent);
+      border-radius:14px;
+      padding:10px 12px;
+      box-shadow: var(--shadow2);
+    }
+    details.rare > summary{
+      cursor:pointer;
+      font-weight:950;
+      list-style:none;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
+      color: color-mix(in oklab, var(--text) 92%, var(--muted));
+    }
+    details.rare > summary::-webkit-details-marker{ display:none; }
+    .rare-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(217,119,6,.22);
+      background: color-mix(in oklab, rgba(217,119,6,.08) 100%, transparent);
+      font-size:12px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .rare-grid{
+      margin-top:10px;
+      display:grid;
+      gap:10px;
+    }
+    @media(min-width:760px){
+      .rare-grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .cal-row{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
       padding:10px 12px;
       border-radius:14px;
-      border:1px solid var(--line);
-      background: color-mix(in oklab, var(--bg2) 70%, transparent);
-      box-shadow: var(--shadow2);
-    }
-    .cal-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
+      border:1px solid rgba(217,119,6,.22);
+      background: color-mix(in oklab, rgba(217,119,6,.07) 100%, transparent);
     }
     .cal-row input[type="checkbox"]{
       width:auto;
       transform:scale(1.12);
-      margin-top:0;
-      flex:0 0 auto;
-    }
-    .cal-title{
-      font-weight:1000;
-      font-size:13px;
-      white-space:nowrap;
-    }
-    .cal-sub{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.3;
       margin-top:2px;
-      white-space:normal;
-    }
-
-    .mini-toggle{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: color-mix(in oklab, var(--card) 78%, transparent);
-      box-shadow: var(--shadow2);
-      user-select:none;
-      font-weight:900;
-      font-size:12px;
-      color:var(--text);
-      cursor:pointer;
-      white-space:nowrap;
-      flex:0 0 auto;
-    }
-    .mini-toggle input{ display:none; }
-
-    /* =========================
-       JOB DROPDOWN (details/summary)
-       ========================= */
-    details.jobdrop{
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: color-mix(in oklab, var(--bg2) 66%, transparent);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-    }
-    details.jobdrop > summary{
-      list-style:none;
-      cursor:pointer;
-      padding:12px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      user-select:none;
-      background:
-        linear-gradient(180deg,
-          color-mix(in oklab, var(--card) 82%, transparent),
-          color-mix(in oklab, var(--card2) 86%, transparent)
-        );
-    }
-    details.jobdrop > summary::-webkit-details-marker{ display:none; }
-    .jobdrop-title{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width:0;
-    }
-    .jobdrop-title b{
-      font-size:13.5px;
-      letter-spacing:.2px;
-    }
-    .jobdrop-title span{
-      font-size:12px;
-      color:var(--muted);
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-    .jobdrop-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex:0 0 auto;
-    }
-    .badge{
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: color-mix(in oklab, var(--bg2) 74%, transparent);
-      font-size:12px;
-      font-weight:900;
-      color: color-mix(in oklab, var(--text) 92%, var(--muted));
-      box-shadow: var(--shadow2);
-      white-space:nowrap;
-    }
-    .chev{
-      width:34px; height:34px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: color-mix(in oklab, var(--bg2) 72%, transparent);
-      box-shadow: var(--shadow2);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:1000;
-    }
-    details.jobdrop[open] .chev{ transform: rotate(180deg); }
-
-    .jobdrop-inner{
-      padding:12px;
-      border-top:1px solid var(--line);
     }
 
     /* Sticky recommendation panel on desktop */
@@ -735,6 +652,91 @@
         top:96px;
         align-self:start;
       }
+    }
+
+    /* Dropdown block */
+    details.block{
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--bg2) 68%, transparent);
+      border-radius:18px;
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    details.block > summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:1000;
+      font-size:14px;
+      color: color-mix(in oklab, var(--text) 94%, var(--muted));
+    }
+    details.block > summary::-webkit-details-marker{ display:none; }
+    .chev{
+      width:34px; height:28px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      display:flex; align-items:center; justify-content:center;
+      background: color-mix(in oklab, var(--card) 88%, transparent);
+      font-weight:1000;
+      box-shadow: var(--shadow2);
+      flex:0 0 auto;
+    }
+
+    /* Leg kit highlight */
+    .leg-warn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(217,119,6,.28);
+      background: color-mix(in oklab, rgba(217,119,6,.10) 100%, transparent);
+      font-weight:950;
+      color: color-mix(in oklab, var(--text) 95%, #000);
+    }
+
+    /* Rounding helper */
+    .inline-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+    }
+    .pill-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--card) 88%, transparent);
+      box-shadow: var(--shadow2);
+      cursor:pointer;
+      font-weight:950;
+      color:var(--text);
+      user-select:none;
+    }
+    .pill-btn:active{ transform: translateY(1px); }
+
+    .tiny{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    pre.script{
+      white-space:pre-wrap;
+      margin:10px 0 0;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--bg2) 70%, transparent);
+      font-size:12px;
+      color: var(--text);
     }
   </style>
 </head>
@@ -747,17 +749,20 @@
         <div class="logo-wrap">
           <img id="logoImg" class="logo-img" alt="HY-C Logo" style="display:none" />
           <svg id="logoFallback" class="logo-fallback" viewBox="0 0 215 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HY-C">
-            <rect x="0" y="0" width="215" height="80" rx="16" fill="none" stroke="rgba(255,255,255,.14)" />
-            <rect x="8" y="8" width="199" height="64" rx="14" fill="rgba(225,29,46,.16)" stroke="rgba(225,29,46,.35)"/>
-            <text x="20" y="54" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" font-weight="900" font-size="44" fill="white" letter-spacing="1">HY-C</text>
+            <rect x="0" y="0" width="215" height="80" rx="16" fill="none" stroke="rgba(0,0,0,.14)" />
+            <rect x="8" y="8" width="199" height="64" rx="14" fill="rgba(225,29,46,.14)" stroke="rgba(225,29,46,.30)"/>
+            <text x="20" y="54" font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial" font-weight="900" font-size="44" fill="black" letter-spacing="1">HY-C</text>
           </svg>
         </div>
         <input id="logoPicker" type="file" accept="image/*" style="display:none" />
       </div>
 
       <div class="titleblock">
-        <h1>HY-C Chimney Cap Selector (Technician Tool)</h1>
-        <p>Draft King® Single Flue + Big Top™ Crown Mount • Recommends SKU • Job Report export</p>
+        <div class="title-row">
+          <h1>HY-C Chimney Cap Selector</h1>
+          <span class="mode-chip" id="modeChip"><span class="mode-dot"></span><span id="modeChipText">Mode: Single Flue</span></span>
+        </div>
+        <p>Draft King® • Recommends SKU • Job Report export</p>
       </div>
     </div>
 
@@ -776,55 +781,24 @@
   <div class="grid">
 
     <section class="card">
-      <h2 class="section-title">Cap Selection</h2>
+      <div class="section-title big">
+        <span>Cap Selection</span>
+        <span class="title-pill" id="capHeaderPill">Single Flue</span>
+      </div>
 
       <!-- CAP FAMILY SELECTOR -->
       <div style="margin-bottom:10px">
         <label for="capFamily">Cap type</label>
         <select id="capFamily">
-          <option value="draftking" selected>Draft King® — Single Flue (Slip-In / Bolt-On)</option>
-          <option value="bigtop">Draft King® Big Top™ — Multi-Flue (Crown Mount)</option>
+          <option value="draftking" selected>Single Flue (Slip-In / Bolt-On)</option>
+          <option value="bigtop">Multi-Flue (Crown Mount / Big Top)</option>
         </select>
-        <div class="hint" id="capFamilyHint">Draft King Single Flue tool is active.</div>
+        <div class="hint" id="capFamilyHint">Single Flue tool is active.</div>
       </div>
 
       <!-- DRAFT KING SECTION -->
       <div id="draftKingSection">
         <div class="row">
-          <div>
-            <label>Code region (optional)</label>
-
-            <!-- QUIETER CA ROW -->
-            <div class="cal-row">
-              <div class="cal-left">
-                <input type="checkbox" id="caCode" />
-                <div style="min-width:0;">
-                  <div class="cal-title">California 5/8" Code Compliant</div>
-                  <div class="cal-sub" id="stateHint">Optional. Use only if you’re working in an area requiring 5/8" mesh.</div>
-                </div>
-              </div>
-
-              <label class="mini-toggle" for="meshOverride" title="Enable to choose mesh manually">
-                Manual mesh
-                <input type="checkbox" id="meshOverride" />
-              </label>
-            </div>
-          </div>
-
-          <div>
-            <label for="mesh">Mesh requirement</label>
-            <select id="mesh">
-              <option value="3/4">3/4" mesh</option>
-              <option value="5/8">5/8" mesh</option>
-            </select>
-
-            <div class="hint" id="meshHint" style="margin-top:10px;">
-              Default is 3/4". If California is checked (and Manual mesh is OFF), mesh locks to 5/8".
-            </div>
-          </div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
           <div>
             <label for="shape">Shape / Mount style</label>
             <select id="shape">
@@ -835,8 +809,13 @@
             </select>
 
             <div class="hint" id="dkMeasureHint">
-              Measure the <b>outside-to-outside</b> of the flue tile. Tool rounds to the nearest <b>1/4"</b>.
+              Measure the <b>outside-to-outside</b> of the flue tile. Round to the nearest <b>1/4"</b>.
               For round, measure the <b>outside diameter</b>.
+            </div>
+
+            <div class="inline-actions">
+              <button class="pill-btn" id="roundInputsBtn" type="button">Round inputs to nearest 1/4"</button>
+              <span class="tiny" id="roundingNote">Tip: Rectangular measurements will auto-set Length = longer side.</span>
             </div>
           </div>
 
@@ -883,13 +862,59 @@
           <div id="lenWrap">
             <label for="len">Outside-to-outside of flue tile — Length (inches)</label>
             <input id="len" inputmode="decimal" placeholder="Example: 9.5" />
-            <div class="hint">Tool rounds to the nearest <b>1/4"</b>. Example: 9-1/4" → 9.25</div>
+            <div class="hint">Round to the nearest <b>1/4"</b>. Example: 9-1/4" → 9.25</div>
           </div>
           <div id="widWrap">
             <label for="wid">Outside-to-outside of flue tile — Width (inches)</label>
             <input id="wid" inputmode="decimal" placeholder="Example: 13.5" />
-            <div class="hint">Tool rounds to the nearest <b>1/4"</b>. Example: 13-3/4" → 13.75</div>
+            <div class="hint">Round to the nearest <b>1/4"</b>. Example: 13-3/4" → 13.75</div>
           </div>
+        </div>
+
+        <!-- Rare code requirements (minimized) -->
+        <div style="margin-top:10px">
+          <details class="rare" id="rareMeshBlock">
+            <summary>
+              <span>Rare code requirement (5/8&quot; mesh)</span>
+              <span class="rare-badge">Important • Rare</span>
+            </summary>
+
+            <div class="rare-grid">
+              <div>
+                <div class="cal-row">
+                  <input type="checkbox" id="caCode" />
+                  <div>
+                    <div style="font-weight:1000; margin-bottom:4px;">California 5/8&quot; Code Compliant</div>
+                    <div style="font-size:12.5px; color:var(--muted); line-height:1.35;">
+                      If checked, mesh is set to <b>5/8&quot;</b>.
+                      If your area requires 5/8&quot; (rare), use the override to choose manually.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hint" id="stateHint" style="margin-top:10px;"></div>
+              </div>
+
+              <div>
+                <label for="mesh">Mesh selection</label>
+                <select id="mesh">
+                  <option value="3/4">3/4&quot; mesh (standard)</option>
+                  <option value="5/8">5/8&quot; mesh (only when required)</option>
+                </select>
+
+                <div class="callout" style="margin-top:10px; display:flex; align-items:flex-start; gap:10px;">
+                  <input type="checkbox" id="meshOverride" style="width:auto; transform:scale(1.12); margin-top:2px;" />
+                  <div style="font-size:13px; color:var(--muted); line-height:1.4">
+                    <b>Override:</b> Turn on only if you <b>know</b> your local requirement needs 5/8&quot; mesh.
+                  </div>
+                </div>
+
+                <div class="hint" style="margin-top:8px;">
+                  If unsure, use <b>3/4&quot;</b>.
+                </div>
+              </div>
+            </div>
+          </details>
         </div>
 
         <div class="row" style="margin-top:10px">
@@ -897,7 +922,7 @@
             <label for="tileAboveCrown">Tile height above crown (inches)</label>
             <input id="tileAboveCrown" inputmode="decimal" placeholder="Example: 0.75" />
             <div class="hint">
-              If the tile extends <b>less than 1"</b> above the crown, a heavy-duty stainless <b>Leg Kit</b> may be recommended.
+              If the tile extends <b>less than 1&quot;</b> above the crown, a heavy-duty stainless <b>Leg Kit</b> may be recommended.
             </div>
           </div>
           <div>
@@ -943,29 +968,34 @@
             </div>
 
             <div class="hint">
-              Measure the crown <b>outside edge-to-edge</b>. Tool rounds to the nearest <b>1/4"</b>.
-              Tool subtracts <b>3"</b> total to determine screen-to-screen target.
-              Height rule: <b>flue above crown + 5"</b>, then round up to the next catalog height.
+              Measure the crown <b>outside edge-to-edge</b>. Round to the nearest <b>1/4&quot;</b>.
+              Tool subtracts <b>3&quot;</b> total to determine screen-to-screen target.
+              Height rule: <b>flue above crown + 5&quot;</b>, then round up to the next catalog height.
             </div>
 
             <div class="checkrow" style="margin-top:10px">
               <input id="bt_hingeRec" type="checkbox" />
               <div>
-                <div style="font-weight:1000; margin-bottom:4px;">Hinged Recommendation</div>
+                <div style="font-weight:1000; margin-bottom:4px;">Hinged option (optional)</div>
                 <div style="font-size:12.5px; color:var(--muted); line-height:1.35;">
-                  Hinged is often helpful when access is tight or the crown is uneven/slope-prone.
-                  If selected and available for the chosen size/height, we’ll list both <b>Standard</b> and <b>Hinged</b> SKUs.
+                  Helpful when access is tight or crown is uneven/slope-prone.
+                  If available for your size/height, we’ll list both <b>Standard</b> and <b>Hinged</b> SKUs.
                 </div>
               </div>
+            </div>
+
+            <div class="inline-actions">
+              <button class="pill-btn" id="roundBTBtn" type="button">Round Big Top inputs to nearest 1/4"</button>
+              <span class="tiny">Tip: Use crown outside edge-to-edge.</span>
             </div>
           </div>
 
           <div class="bt-quickrulescol">
             <label>Quick rules</label>
             <div class="callout">
-              • Screen-to-screen target = <b>(crown − 3")</b>.<br>
-              • Height rule = <b>flue above crown + 5"</b> → then round up to the next catalog height.<br>
-              • If no standard size fits (after subtracting 3"), recommend custom Big Top.
+              • Screen-to-screen target = <b>(crown − 3&quot;)</b>.<br>
+              • Height rule = <b>flue above crown + 5&quot;</b> → round up to the next catalog height.<br>
+              • If no standard size fits (after subtracting 3&quot;), recommend custom Big Top.
             </div>
           </div>
         </div>
@@ -974,12 +1004,12 @@
           <div>
             <label for="bt_crownL">Outside crown edge-to-edge — Length (inches)</label>
             <input id="bt_crownL" inputmode="decimal" placeholder="Example: 40.0" />
-            <div class="hint">Tool rounds to the nearest <b>1/4"</b>.</div>
+            <div class="hint">Round to the nearest <b>1/4&quot;</b>.</div>
           </div>
           <div>
             <label for="bt_crownW">Outside crown edge-to-edge — Width (inches)</label>
             <input id="bt_crownW" inputmode="decimal" placeholder="Example: 30.0" />
-            <div class="hint">Tool rounds to the nearest <b>1/4"</b>.</div>
+            <div class="hint">Round to the nearest <b>1/4&quot;</b>.</div>
           </div>
         </div>
 
@@ -988,13 +1018,13 @@
             <label for="bt_flueAboveCrown">Flue height above crown (inches)</label>
             <input id="bt_flueAboveCrown" inputmode="decimal" placeholder="Example: 6.5" />
             <div class="hint">
-              Height rule: required = flue height above crown + <b>5"</b>. Then round up to the next standard Big Top height.
+              Height rule: required = flue height above crown + <b>5&quot;</b>. Then round up to the next standard Big Top height.
             </div>
           </div>
           <div>
             <label for="bt_screenTarget">Calculated screen-to-screen target (auto)</label>
             <input id="bt_screenTarget" disabled />
-            <div class="hint">Screen-to-screen target = (crown L − 3") × (crown W − 3").</div>
+            <div class="hint">Screen-to-screen target = (crown L − 3&quot;) × (crown W − 3&quot;).</div>
           </div>
         </div>
 
@@ -1011,7 +1041,7 @@
               </span>
             </label>
             <div class="hint" id="bt_slopeHint" style="margin-top:6px">
-              If checked, consider Hinged as a helpful option (not forced).
+              If checked, hinged can be helpful (optional).
             </div>
           </div>
         </div>
@@ -1021,59 +1051,48 @@
 
       <div class="hr"></div>
 
-      <!-- JOB + PHOTOS + NOTES (DROPDOWN) -->
-      <details class="jobdrop" id="jobDetails">
+      <!-- JOB / PHOTOS / NOTES as ONE dropdown -->
+      <details class="block" id="jobBlock">
         <summary>
-          <div class="jobdrop-title">
-            <b>Job Summary + Photos + Notes</b>
-            <span id="jobDropSubtitle">Optional (recommended for report export)</span>
-          </div>
-          <div class="jobdrop-right">
-            <span class="badge" id="photoCountBadge">Photos: 0</span>
-            <span class="chev">⌄</span>
-          </div>
+          <span>Job Summary • Photos • Notes</span>
+          <span class="chev" id="jobChev">▾</span>
         </summary>
 
-        <div class="jobdrop-inner">
-          <div class="job-summary" id="jobSummaryBlock">
-            <h3>Job Summary</h3>
-
-            <div class="grid3">
-              <div>
-                <label for="jobName">Job name / address (optional)</label>
-                <textarea id="jobName" rows="2" placeholder="Example: 123 Main St • Smith"></textarea>
-              </div>
-              <div>
-                <label for="techName">Technician name (optional)</label>
-                <input id="techName" placeholder="Example: Joe H." />
-              </div>
-              <div>
-                <label for="estimatePrice">Estimate / price (optional)</label>
-                <input id="estimatePrice" inputmode="decimal" placeholder="Example: 695.00" />
-                <div class="hint">This prints on the exported report.</div>
-              </div>
+        <div style="margin-top:12px">
+          <div class="row">
+            <div>
+              <label for="jobName">Job name / address (optional)</label>
+              <textarea id="jobName" rows="2" placeholder="Example: 123 Main St • Smith"></textarea>
             </div>
-
-            <div class="grid2" style="margin-top:10px">
-              <div>
-                <label for="internalRef">Internal reference (optional)</label>
-                <input id="internalRef" placeholder="Example: WO-18422 / Customer ID / PO" />
-              </div>
-              <div>
-                <label for="customerNotes">Customer-facing notes (optional)</label>
-                <input id="customerNotes" placeholder="Example: Black finish requested. Install next week." />
-              </div>
+            <div>
+              <label for="techName">Technician name (optional)</label>
+              <input id="techName" placeholder="Example: Joe H." />
             </div>
+          </div>
 
-            <div style="margin-top:10px">
-              <label for="internalNotes">Internal-only notes (optional)</label>
-              <textarea id="internalNotes" placeholder="Example: Crown has hairline cracks. Recommend crown coat upsell."></textarea>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label for="estimatePrice">Estimate / price (optional)</label>
+              <input id="estimatePrice" inputmode="decimal" placeholder="Example: 695.00" />
+              <div class="hint">Prints on the exported report.</div>
             </div>
+            <div>
+              <label for="internalRef">Internal reference (optional)</label>
+              <input id="internalRef" placeholder="Example: WO-18422 / Customer ID / PO" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label for="customerNotes">Customer-facing notes (optional)</label>
+            <input id="customerNotes" placeholder="Example: Black finish requested. Install next week." />
+          </div>
+
+          <div style="margin-top:10px">
+            <label for="internalNotes">Office notes (optional)</label>
+            <textarea id="internalNotes" placeholder="Example: Crown has hairline cracks. Recommend crown coat."></textarea>
           </div>
 
           <div class="hr"></div>
-
-          <h3 class="section-title" style="margin-top:0">Photos & Notes</h3>
 
           <label for="photos">Job photos (optional)</label>
           <input id="photos" type="file" accept="image/*" multiple />
@@ -1120,7 +1139,7 @@
 
               <div class="sku-line" id="skuHingeLine" style="display:none;">
                 <div class="sku-left">
-                  <div class="sku-title" id="skuHingeTitle">Hinged SKU (BTH)</div>
+                  <div class="sku-title" id="skuHingeTitle">Hinged SKU (optional)</div>
                   <div class="sku-value" id="skuHingeValue">—</div>
                 </div>
                 <button class="sku-btn" id="copyHingeSku" type="button">Copy</button>
@@ -1129,6 +1148,11 @@
               <div class="hint" id="skuHelp" style="margin-top:6px;">
                 For pricing, contact your HY-C distributor with the SKU(s) above.
               </div>
+            </div>
+
+            <div class="copy">
+              <button id="copySkus" type="button">Copy SKU(s)</button>
+              <button id="copyCallScript" type="button">Copy Distributor Call Script</button>
             </div>
           </div>
         </div>
@@ -1146,27 +1170,32 @@
 
 <script>
 /* =========================
-   THEME TOGGLE (remembered)
+   STORAGE KEYS
    ========================= */
-const THEME_KEY = "hyc_cap_selector_theme";
+const THEME_KEY = "hyc_cap_selector_theme_v2";
+const LOGO_KEY  = "hyc_cap_selector_logo_dataurl_v2";
+const PREF_KEY  = "hyc_cap_selector_prefs_v2";
+
+/* =========================
+   THEME (Light default)
+   ========================= */
 function setTheme(mode){
   document.documentElement.setAttribute("data-theme", mode);
   localStorage.setItem(THEME_KEY, mode);
 }
 (function initTheme(){
   const saved = localStorage.getItem(THEME_KEY);
-  if(saved === "light") setTheme("light");
-  else setTheme("dark");
+  if(saved === "dark") setTheme("dark");
+  else setTheme("light");
 })();
 document.getElementById("themeToggle").addEventListener("click", ()=>{
-  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const current = document.documentElement.getAttribute("data-theme") || "light";
   setTheme(current === "dark" ? "light" : "dark");
 });
 
 /* =========================
    LOGO (optional upload in localStorage)
    ========================= */
-const LOGO_KEY = "hyc_cap_selector_logo_dataurl";
 const logoImg = document.getElementById("logoImg");
 const logoFallback = document.getElementById("logoFallback");
 const logoPicker = document.getElementById("logoPicker");
@@ -1191,7 +1220,7 @@ logoPicker.addEventListener("change", async (e)=>{
   if(!file) return;
   const dataUrl = await fileToDataURL(file);
   if(dataUrl.length > 1_200_000){
-    alert("That image is pretty large. Try a smaller logo image (or screenshot) and re-upload.");
+    alert("That image is pretty large. Try a smaller logo image and re-upload.");
     return;
   }
   localStorage.setItem(LOGO_KEY, dataUrl);
@@ -1222,6 +1251,7 @@ function wireFinishStrip(stripId, hiddenSelectId){
     const opt = e.target.closest(".finish-option");
     if(!opt) return;
     setSelected(opt.dataset.finish);
+    savePrefs();
   });
 
   return { setSelected };
@@ -1349,7 +1379,20 @@ function attachSanitizers(){
   ["len","wid","tileAboveCrown","bt_crownL","bt_crownW","bt_flueAboveCrown","estimatePrice"].forEach(id=>{
     const el = $(id);
     if(!el) return;
-    el.addEventListener("input", ()=>sanitizeDecimalInput(el));
+    el.addEventListener("input", ()=>{
+      sanitizeDecimalInput(el);
+      savePrefsDebounced();
+    });
+    el.addEventListener("blur", ()=>{
+      // auto-round on blur (gentle, only if a number is present)
+      const n = toNum(el.value);
+      if(n != null){
+        el.value = roundQuarter(n).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+      }
+      if(id==="len" || id==="wid") enforceRectLengthLonger();
+      if(id==="bt_crownL" || id==="bt_crownW") bt_updateScreenTarget();
+      savePrefs();
+    });
   });
 }
 attachSanitizers();
@@ -1362,32 +1405,22 @@ function toNum(val){
   return Number.isFinite(n) ? n : null;
 }
 
-/* =========================
-   Rounding (nearest 1/4")
-   ========================= */
-function roundToQuarter(n){
-  if(n == null || !Number.isFinite(n)) return n;
-  return Math.round(n * 4) / 4;
+function roundQuarter(x){
+  return Math.round(x * 4) / 4;
 }
-function fmtQuarter(n){
-  if(n == null || !Number.isFinite(n)) return "";
-  // Keep clean: show up to 2 decimals, but trim trailing zeros
-  const s = n.toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
-  return s;
+
+function enforceRectLengthLonger(){
+  const cat = $("shape").value;
+  if(cat !== "rect" && cat !== "oval") return;
+  const L = toNum($("len").value);
+  const W = toNum($("wid").value);
+  if(L==null || W==null) return;
+  if(W > L){
+    // swap so length is longer
+    $("len").value = W;
+    $("wid").value = L;
+  }
 }
-function roundInputToQuarter(id){
-  const el = $(id);
-  if(!el) return;
-  const n = toNum(el.value);
-  if(n == null) return;
-  const r = roundToQuarter(n);
-  el.value = fmtQuarter(r);
-}
-["len","wid","tileAboveCrown","bt_crownL","bt_crownW","bt_flueAboveCrown"].forEach(id=>{
-  const el = $(id);
-  if(!el) return;
-  el.addEventListener("blur", ()=> roundInputToQuarter(id));
-});
 
 function normalizeLW(a,b){ return (a>=b) ? [a,b] : [b,a]; }
 function capArea(capStr){
@@ -1441,6 +1474,56 @@ function resolveSku(row, finishKey){
 }
 
 /* =========================
+   Preferences persistence
+   ========================= */
+let saveT = null;
+function savePrefsDebounced(){
+  clearTimeout(saveT);
+  saveT = setTimeout(savePrefs, 250);
+}
+function savePrefs(){
+  const prefs = {
+    capFamily: $("capFamily").value,
+    shape: $("shape").value,
+    finish: $("finish").value,
+    mesh: $("mesh").value,
+    meshOverride: $("meshOverride").checked,
+    caCode: $("caCode").checked,
+    rareOpen: $("rareMeshBlock").open ? true : false,
+
+    bt_finish: $("bt_finish").value,
+    bt_hingeRec: $("bt_hingeRec").checked,
+    bt_slope: $("bt_slope").checked,
+
+    // keep job block open state
+    jobOpen: $("jobBlock").open ? true : false,
+  };
+  localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
+}
+function loadPrefs(){
+  try{
+    const raw = localStorage.getItem(PREF_KEY);
+    if(!raw) return;
+    const p = JSON.parse(raw);
+
+    if(p.capFamily) $("capFamily").value = p.capFamily;
+    if(p.shape) $("shape").value = p.shape;
+    if(p.finish) $("finish").value = p.finish;
+    if(p.mesh) $("mesh").value = p.mesh;
+
+    $("meshOverride").checked = Boolean(p.meshOverride);
+    $("caCode").checked = Boolean(p.caCode);
+    $("rareMeshBlock").open = Boolean(p.rareOpen);
+
+    if(p.bt_finish) $("bt_finish").value = p.bt_finish;
+    $("bt_hingeRec").checked = Boolean(p.bt_hingeRec);
+    $("bt_slope").checked = Boolean(p.bt_slope);
+
+    $("jobBlock").open = Boolean(p.jobOpen);
+  }catch(e){ /* ignore */ }
+}
+
+/* =========================
    UI Behaviors
    ========================= */
 function updateInputsForShape(){
@@ -1458,126 +1541,24 @@ function updateInputsForShape(){
 
 function applyCaliforniaMeshRule(){
   const isCA = $("caCode").checked;
-  const manual = $("meshOverride").checked;
+  const override = $("meshOverride").checked;
 
-  if(isCA && !manual){
+  if(isCA && !override){
     $("mesh").value = "5/8";
     $("mesh").disabled = true;
-    $("stateHint").textContent = `California selected → mesh set to 5/8".`;
+    $("stateHint").innerHTML = `Code: <b>California</b> → mesh set to <b>5/8"</b>.`;
   }else{
     $("mesh").disabled = false;
-    if(isCA && manual){
-      $("stateHint").textContent = `California selected. Manual mesh is ON → choose mesh as needed.`;
+    if(isCA && override){
+      $("stateHint").innerHTML = `California selected. Override enabled — choose mesh manually.`;
     }else{
-      $("stateHint").textContent = `Optional. Use only if you’re working in an area requiring 5/8" mesh.`;
+      $("stateHint").innerHTML = `If your area requires <b>5/8"</b>, use Override and select 5/8". Otherwise use 3/4".`;
     }
   }
 }
 
 let lastResult = null;
-function clearRecommendationUI(){
-  $("statusBox").className = "status warn";
-  $("statusBox").innerHTML = `Enter measurements and click <b>Find the correct cap</b>.`;
-  $("details").style.display = "none";
 
-  $("capName").textContent = "—";
-  $("capMesh").textContent = "—";
-  $("fitRange").textContent = "—";
-  $("capFinish").textContent = "—";
-  $("legKit").textContent = "—";
-
-  hideSkuLines();
-  lastResult = null;
-}
-
-function updateCapFamilyUI(){
-  const family = $("capFamily").value;
-  if(family === "bigtop"){
-    $("draftKingSection").style.display = "none";
-    $("bigTopSection").style.display = "";
-    $("capFamilyHint").textContent = "Big Top crown-mount tool is active.";
-  }else{
-    $("draftKingSection").style.display = "";
-    $("bigTopSection").style.display = "none";
-    $("capFamilyHint").textContent = "Draft King Single Flue tool is active.";
-  }
-  clearRecommendationUI();
-}
-
-$("shape").addEventListener("change", updateInputsForShape);
-$("caCode").addEventListener("change", applyCaliforniaMeshRule);
-$("meshOverride").addEventListener("change", applyCaliforniaMeshRule);
-$("capFamily").addEventListener("change", updateCapFamilyUI);
-
-updateInputsForShape();
-applyCaliforniaMeshRule();
-updateCapFamilyUI();
-
-/* wire finish pills */
-const dkFinishCtrl = wireFinishStrip("finishStripDK", "finish");
-const btFinishCtrl = wireFinishStrip("finishStripBT", "bt_finish");
-
-/* =========================
-   Photos
-   ========================= */
-let photoData = [];
-function updatePhotoBadge(){
-  const n = photoData.length;
-  $("photoCountBadge").textContent = `Photos: ${n}`;
-}
-function updateJobDropdownSubtitle(){
-  const job = ($("jobName").value || "").trim();
-  const tech = ($("techName").value || "").trim();
-  const bits = [];
-  if(job) bits.push(job);
-  if(tech) bits.push(`Tech: ${tech}`);
-  const subtitle = bits.length ? bits.join(" • ") : "Optional (recommended for report export)";
-  $("jobDropSubtitle").textContent = subtitle;
-}
-["jobName","techName"].forEach(id=>{
-  const el = $(id);
-  if(el) el.addEventListener("input", updateJobDropdownSubtitle);
-});
-updateJobDropdownSubtitle();
-updatePhotoBadge();
-
-$("photos").addEventListener("change", async (e)=>{
-  photoData = [];
-  const files = Array.from(e.target.files || []);
-  const thumbs = $("thumbs");
-  thumbs.innerHTML = "";
-  if(files.length === 0){
-    updatePhotoBadge();
-    return;
-  }
-
-  for(const f of files){
-    const dataUrl = await fileToDataURL(f);
-    photoData.push({name:f.name, type:f.type, dataUrl});
-  }
-  for(const p of photoData){
-    const div = document.createElement("div");
-    div.className = "thumb";
-    const img = document.createElement("img");
-    img.src = p.dataUrl;
-    img.alt = p.name;
-    div.appendChild(img);
-    thumbs.appendChild(div);
-  }
-  updatePhotoBadge();
-});
-function fileToDataURL(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = ()=>resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-/* =========================
-   SKU UI helpers
-   ========================= */
 function hideSkuLines(){
   $("skuStdLine").style.display = "none";
   $("skuHingeLine").style.display = "none";
@@ -1597,13 +1578,153 @@ function showHingedSku(text){
   $("copyHingeSku").disabled = !text || text.startsWith("—");
 }
 
+function clearRecommendationUI(){
+  $("statusBox").className = "status warn";
+  $("statusBox").innerHTML = `Enter measurements and click <b>Find the correct cap</b>.`;
+  $("details").style.display = "none";
+
+  $("capName").textContent = "—";
+  $("capMesh").textContent = "—";
+  $("fitRange").textContent = "—";
+  $("capFinish").textContent = "—";
+  $("legKit").textContent = "—";
+
+  hideSkuLines();
+  lastResult = null;
+}
+
+function setModeUI(family){
+  const isBT = family === "bigtop";
+  $("modeChipText").textContent = isBT ? "Mode: Multi-Flue (Crown Mount)" : "Mode: Single Flue";
+  $("capHeaderPill").textContent = isBT ? "Multi-Flue (Crown Mount)" : "Single Flue";
+}
+
+function updateCapFamilyUI(){
+  const family = $("capFamily").value;
+  if(family === "bigtop"){
+    $("draftKingSection").style.display = "none";
+    $("bigTopSection").style.display = "";
+    $("capFamilyHint").textContent = "Multi-Flue (Crown Mount) tool is active.";
+  }else{
+    $("draftKingSection").style.display = "";
+    $("bigTopSection").style.display = "none";
+    $("capFamilyHint").textContent = "Single Flue tool is active.";
+  }
+  setModeUI(family);
+  clearRecommendationUI();
+  savePrefs();
+}
+
+$("shape").addEventListener("change", ()=>{
+  updateInputsForShape();
+  savePrefs();
+});
+$("caCode").addEventListener("change", ()=>{
+  applyCaliforniaMeshRule();
+  savePrefs();
+});
+$("meshOverride").addEventListener("change", ()=>{
+  applyCaliforniaMeshRule();
+  savePrefs();
+});
+$("mesh").addEventListener("change", savePrefs);
+$("capFamily").addEventListener("change", updateCapFamilyUI);
+
+$("bt_hingeRec").addEventListener("change", savePrefs);
+$("bt_slope").addEventListener("change", savePrefs);
+$("bt_finish").addEventListener("change", savePrefs);
+
+$("jobBlock").addEventListener("toggle", ()=>{
+  $("jobChev").textContent = $("jobBlock").open ? "▴" : "▾";
+  savePrefs();
+});
+$("rareMeshBlock").addEventListener("toggle", savePrefs);
+
+updateInputsForShape();
+
+/* wire finish pills */
+const dkFinishCtrl = wireFinishStrip("finishStripDK", "finish");
+const btFinishCtrl = wireFinishStrip("finishStripBT", "bt_finish");
+
+/* =========================
+   Apply saved prefs AFTER wiring
+   ========================= */
+loadPrefs();
+applyCaliforniaMeshRule();
+updateCapFamilyUI();
+
+if(dkFinishCtrl) dkFinishCtrl.setSelected($("finish").value || "ss_u");
+if(btFinishCtrl) btFinishCtrl.setSelected($("bt_finish").value || "stainless");
+$("jobChev").textContent = $("jobBlock").open ? "▴" : "▾";
+
+/* =========================
+   Rounding buttons
+   ========================= */
+$("roundInputsBtn").addEventListener("click", ()=>{
+  const cat = $("shape").value;
+  const L = toNum($("len").value);
+  const W = cat.startsWith("round") ? null : toNum($("wid").value);
+
+  if(L!=null) $("len").value = roundQuarter(L).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+  if(W!=null) $("wid").value = roundQuarter(W).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+
+  enforceRectLengthLonger();
+  savePrefs();
+});
+
+$("roundBTBtn").addEventListener("click", ()=>{
+  const L = toNum($("bt_crownL").value);
+  const W = toNum($("bt_crownW").value);
+  const H = toNum($("bt_flueAboveCrown").value);
+
+  if(L!=null) $("bt_crownL").value = roundQuarter(L).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+  if(W!=null) $("bt_crownW").value = roundQuarter(W).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+  if(H!=null) $("bt_flueAboveCrown").value = roundQuarter(H).toFixed(2).replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+
+  bt_updateScreenTarget();
+  savePrefs();
+});
+
+/* =========================
+   Photos
+   ========================= */
+let photoData = [];
+$("photos").addEventListener("change", async (e)=>{
+  photoData = [];
+  const files = Array.from(e.target.files || []);
+  const thumbs = $("thumbs");
+  thumbs.innerHTML = "";
+  if(files.length === 0) return;
+
+  for(const f of files){
+    const dataUrl = await fileToDataURL(f);
+    photoData.push({name:f.name, type:f.type, dataUrl});
+  }
+  for(const p of photoData){
+    const div = document.createElement("div");
+    div.className = "thumb";
+    const img = document.createElement("img");
+    img.src = p.dataUrl;
+    img.alt = p.name;
+    div.appendChild(img);
+    thumbs.appendChild(div);
+  }
+});
+
+function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 /* =========================
    Recommendation Logic
    ========================= */
 function computeLegKitRecommendation(tileAbove, shape){
-  const n0 = toNum(tileAbove);
-  const n = (n0==null) ? null : roundToQuarter(n0);
-
+  const n = toNum(tileAbove);
   if(n == null){
     return {label:"—", note:"Enter tile height above crown to evaluate leg kit.", warn:false};
   }
@@ -1625,13 +1746,9 @@ function computeLegKitRecommendation(tileAbove, shape){
 }
 
 function bt_updateScreenTarget(){
-  const L0 = toNum($("bt_crownL").value);
-  const W0 = toNum($("bt_crownW").value);
-  if(L0==null || W0==null){ $("bt_screenTarget").value = ""; return; }
-
-  const L = roundToQuarter(L0);
-  const W = roundToQuarter(W0);
-
+  const L = toNum($("bt_crownL").value);
+  const W = toNum($("bt_crownW").value);
+  if(L==null || W==null){ $("bt_screenTarget").value = ""; return; }
   const tL = L - 3;
   const tW = W - 3;
   $("bt_screenTarget").value = `${tL.toFixed(2)}" x ${tW.toFixed(2)}" (screen-to-screen target)`;
@@ -1684,33 +1801,63 @@ function softSanityWarningsBigTop(crownL, crownW, flueH){
   return warns;
 }
 
-function runBigTopRecommendation(){
-  // Round inputs to nearest 1/4"
-  roundInputToQuarter("bt_crownL");
-  roundInputToQuarter("bt_crownW");
-  roundInputToQuarter("bt_flueAboveCrown");
+function buildDraftKingCallScript({mesh, cat, finish, L, W, leg}){
+  const shapeLabel = ({
+    rect:"Rectangular/Square",
+    oval:"Oval",
+    round_slip:"Round Slip-In",
+    round_bolt:"Round Bolt-On"
+  })[cat] || cat;
 
-  const finish = $("bt_finish").value; // stainless | black | copper
-  const crownL0 = toNum($("bt_crownL").value);
-  const crownW0 = toNum($("bt_crownW").value);
-  const flueH0  = toNum($("bt_flueAboveCrown").value);
+  const mLine = `Mesh: ${mesh === "5/8" ? '5/8" (code required)' : '3/4" (standard)'}`;
+  const sizeLine = cat.startsWith("round")
+    ? `Measured OD: ${Number(L).toFixed(2)}" (rounded to 1/4")`
+    : `Measured O-to-O: ${Number(L).toFixed(2)}" x ${Number(W).toFixed(2)}" (rounded to 1/4")`;
+
+  const lines = [];
+  lines.push("Draft King — Custom cap requested");
+  if($("caCode").checked) lines.push(`Code: California 5/8" Code Compliant`);
+  lines.push(`Shape/Mount: ${shapeLabel}`);
+  lines.push(mLine);
+  lines.push(`Finish: ${finishLabel(finish)}`);
+  lines.push(sizeLine);
+  if(leg?.label && leg.label !== "—") lines.push(`Leg kit: ${leg.label}`);
+  if(leg?.note) lines.push(`Leg kit note: ${leg.note}`);
+  lines.push("Notes: Please quote custom size for these measurements.");
+  return lines.join("\n");
+}
+
+function buildBigTopCallScript({finish, crownL, crownW, targetL, targetW, flueH, neededHeight, lim, hingeRec}){
+  const lines = [];
+  lines.push("Draft King — Big Top (Crown Mount) — Custom requested");
+  lines.push(`Finish: ${bigTopFinishLabel(finish)}`);
+  lines.push(`Crown (outside edge-to-edge): ${crownL}" x ${crownW}"`);
+  lines.push(`Screen-to-screen target (minus 3"): ${targetL.toFixed(2)}" x ${targetW.toFixed(2)}"`);
+  lines.push(`Flue height above crown: ${flueH}"`);
+  lines.push(`Height needed (flue + 5"): ${neededHeight.toFixed(1)}"`);
+  lines.push(`Custom limits: max ${lim.maxW}" W x ${lim.maxL}" L`);
+  if(hingeRec) lines.push("Hinged option requested (if available)");
+  return lines.join("\n");
+}
+
+function runBigTopRecommendation(){
+  const finish = $("bt_finish").value;
+  const crownL = toNum($("bt_crownL").value);
+  const crownW = toNum($("bt_crownW").value);
+  const flueH  = toNum($("bt_flueAboveCrown").value);
 
   const statusBox = $("statusBox");
   const details = $("details");
 
   hideSkuLines();
 
-  if(crownL0==null || crownW0==null || flueH0==null){
+  if(crownL==null || crownW==null || flueH==null){
     statusBox.className = "status bad";
     statusBox.textContent = "Missing measurement. Enter crown length/width and flue height above crown.";
     details.style.display = "none";
     lastResult = null;
     return;
   }
-
-  const crownL = roundToQuarter(crownL0);
-  const crownW = roundToQuarter(crownW0);
-  const flueH  = roundToQuarter(flueH0);
 
   const sanity = softSanityWarningsBigTop(crownL, crownW, flueH);
 
@@ -1732,9 +1879,6 @@ function runBigTopRecommendation(){
   const sloped = $("bt_slope").checked;
   const hingeRec = $("bt_hingeRec").checked || sloped;
 
-  const slopeNote = sloped ? " Crown flagged sloped/uneven." : "";
-  const hingeNote = hingeRec ? " Hinged Recommendation active." : "";
-
   if(!picked || chosenHeight == null){
     statusBox.className = "status warn";
     const lim = BIG_TOP_CUSTOM[finish] || BIG_TOP_CUSTOM.stainless;
@@ -1742,25 +1886,16 @@ function runBigTopRecommendation(){
     const reasonA = (!picked) ? "No standard screen-to-screen size fits your target after subtracting 3\"." : "";
     const reasonB = (!chosenHeight) ? `Height needed is <b>${neededHeight.toFixed(1)}"</b>, which exceeds catalog height options for ${bigTopFinishLabel(finish)}.` : "";
 
-    const callScript =
-      `Call your distributor with:\n` +
-      `• Big Top finish: ${bigTopFinishLabel(finish)}\n` +
-      `• Crown (outside edge-to-edge): ${crownL}" x ${crownW}"\n` +
-      `• Screen-to-screen target (minus 3"): ${targetL.toFixed(2)}" x ${targetW.toFixed(2)}"\n` +
-      `• Flue height above crown: ${flueH}"\n` +
-      `• Height needed: ${neededHeight.toFixed(1)}"\n` +
-      `• Custom limits: max ${lim.maxW}" W x ${lim.maxL}" L\n` +
-      (hingeRec ? `• Hinged option requested (if available)\n` : "");
+    const callScript = buildBigTopCallScript({finish, crownL, crownW, targetL, targetW, flueH, neededHeight, lim, hingeRec});
 
     statusBox.innerHTML =
       `<b>Custom Big Top recommended</b>.<br>` +
       `${reasonA ? `• ${reasonA}<br>` : ""}` +
       `${reasonB ? `• ${reasonB}<br>` : ""}` +
-      (sanity.length ? `<br><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "") +
+      (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "") +
       `<div class="hr" style="margin:10px 0;"></div>` +
-      `<b>Distributor call script (copy/paste):</b><br>` +
-      `<pre style="white-space:pre-wrap; margin:8px 0 0; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background: color-mix(in oklab, var(--bg2) 70%, transparent); font-size:12px; color: var(--text);">${callScript}</pre>` +
-      `<div class="hint" style="margin-top:8px;">${slopeNote}${hingeNote}</div>`;
+      `<b>Distributor call script (copy/paste):</b>` +
+      `<pre class="script" id="callScriptBox">${callScript}</pre>`;
 
     $("capName").textContent = "Custom Big Top recommended";
     $("capMesh").textContent = "Big Top mesh (standard)";
@@ -1768,7 +1903,7 @@ function runBigTopRecommendation(){
       `Crown: ${crownL}" x ${crownW}" → Minus 3": ${targetL.toFixed(2)}" x ${targetW.toFixed(2)}" • ` +
       `Height needed: ${neededHeight.toFixed(1)}"`;
     $("capFinish").textContent = bigTopFinishLabel(finish);
-    $("legKit").textContent = "N/A (Big Top crown-mount)";
+    $("legKit").textContent = "N/A (Crown Mount)";
 
     details.style.display = "";
 
@@ -1777,7 +1912,7 @@ function runBigTopRecommendation(){
       finish,
       crown:{length:crownL,width:crownW},
       target:{length:targetL,width:targetW},
-      flueAboveCrown: flueH, neededHeight, chosenHeight:null,
+      flueAboveCrown: flueH, neededHeight,
       cap:null, hood:null,
       sku:null,
       hingeRecommended: hingeRec,
@@ -1785,17 +1920,7 @@ function runBigTopRecommendation(){
       hingeHeight:null,
       mesh:"Big Top standard",
       slopeFlag: sloped,
-      job:{
-        jobName: $("jobName").value || null,
-        techName: $("techName").value || null,
-        estimate: $("estimatePrice").value || null,
-        internalRef: $("internalRef").value || null
-      },
-      notes:{
-        customer: $("customerNotes").value || null,
-        internal: $("internalNotes").value || null
-      },
-      custom:{ maxW: lim.maxW, maxL: lim.maxL }
+      callScript
     };
     return;
   }
@@ -1820,13 +1945,11 @@ function runBigTopRecommendation(){
       ? `✅ Recommended Big Top: <b>${picked.st[0]}x${picked.st[1]}</b>`
       : `Size found, but <b>Standard SKU missing</b> for this combo. Verify in catalog.`) +
     `<br><span style="opacity:.9">Height needed: <b>${neededHeight.toFixed(1)}"</b> → Standard chosen: <b>${chosenHeight}"</b></span>` +
-    (hingeRec ? `<br><span style="opacity:.9">Hinged option: ${hingeSku ? `<b>available</b>` : `<b>not available</b>`} for this size/height</span>` : "") +
-    (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "") +
-    `<div class="hint" style="margin-top:8px;">${slopeNote}${hingeNote}</div>`;
+    (hingeRec ? `<br><span style="opacity:.9">Hinged option: ${hingeSku ? `<b>available</b>` : `<b>not available</b>`}</span>` : "") +
+    (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "");
 
   $("capName").textContent =
-    `Big Top — ${picked.st[0]}x${picked.st[1]} (screen-to-screen) • Height ${chosenHeight}"` +
-    (hingeRec && hingeSku ? ` • Hinged alt height ${hingeHeight}"` : "");
+    `Big Top — ${picked.st[0]}x${picked.st[1]} (screen-to-screen) • Height ${chosenHeight}"`;
 
   $("capMesh").textContent = `Big Top mesh (standard)`;
   $("fitRange").textContent =
@@ -1840,9 +1963,15 @@ function runBigTopRecommendation(){
   showStandardSku(skuStdText);
   if(hingeRec) showHingedSku(skuHingeText);
 
-  $("legKit").textContent = "N/A (Big Top crown-mount)";
+  $("legKit").textContent = "N/A (Crown Mount)";
 
   $("details").style.display = "";
+
+  const lim = BIG_TOP_CUSTOM[finish] || BIG_TOP_CUSTOM.stainless;
+  const callScript = buildBigTopCallScript({
+    finish, crownL, crownW, targetL, targetW, flueH,
+    neededHeight, lim, hingeRec
+  });
 
   lastResult = {
     ok:Boolean(standardSku),
@@ -1862,36 +1991,19 @@ function runBigTopRecommendation(){
     hingeHeight: hingeHeight,
     mesh:"Big Top standard",
     slopeFlag: sloped,
-    job:{
-      jobName: $("jobName").value || null,
-      techName: $("techName").value || null,
-      estimate: $("estimatePrice").value || null,
-      internalRef: $("internalRef").value || null
-    },
-    notes:{
-      customer: $("customerNotes").value || null,
-      internal: $("internalNotes").value || null
-    }
+    callScript
   };
 }
 
 function runDraftKingRecommendation(){
   applyCaliforniaMeshRule();
 
-  // Round inputs to nearest 1/4" before computing
-  roundInputToQuarter("len");
-  roundInputToQuarter("wid");
-  roundInputToQuarter("tileAboveCrown");
-
   const mesh = $("mesh").value;
   const cat  = $("shape").value;
   const finish = $("finish").value;
 
-  const L0 = toNum($("len").value);
-  const W0 = cat.startsWith("round") ? null : toNum($("wid").value);
-
-  const L = (L0==null) ? null : roundToQuarter(L0);
-  const W = (W0==null) ? null : roundToQuarter(W0);
+  const L = toNum($("len").value);
+  const W = cat.startsWith("round") ? null : toNum($("wid").value);
 
   const statusBox = $("statusBox");
   const details = $("details");
@@ -1906,29 +2018,53 @@ function runDraftKingRecommendation(){
     return;
   }
 
+  if(!cat.startsWith("round")) enforceRectLengthLonger();
+
   const sanity = softSanityWarningsDraftKing(cat, L, W ?? 0);
 
   const matches = findMatches(mesh, cat, L, W ?? 0);
+  const leg = computeLegKitRecommendation($("tileAboveCrown").value, cat);
+
   if(matches.length===0){
+    const callScript = buildDraftKingCallScript({mesh, cat, finish, L, W: (W ?? 0), leg});
+
     statusBox.className = "status warn";
     statusBox.innerHTML =
-      `<b>No standard size fits</b> these measurements. Recommend a <b>custom cap</b>.` +
-      (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "");
+      `<b>Custom cap recommended</b> — no standard size fits these measurements.` +
+      (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "") +
+      `<div class="hr" style="margin:10px 0;"></div>` +
+      `<b>Distributor call script (copy/paste):</b>` +
+      `<pre class="script" id="callScriptBox">${callScript}</pre>`;
 
-    details.style.display = "none";
-    lastResult = { ok:false, module:"draftking", reason:"No standard size fits", mesh, cat, finish, L, W, cap:null, sku:null };
+    $("details").style.display = "none";
+
+    lastResult = {
+      ok:false, module:"draftking",
+      reason:"No standard size fits",
+      mesh, cat, finish,
+      measurement: cat.startsWith("round") ? {diameter:L} : {length:L, width:W},
+      cap:null, sku:null,
+      legKit: leg,
+      california: $("caCode").checked ? true : null,
+      callScript
+    };
     return;
   }
 
   const best = smallestThatFits(matches);
   const sku = resolveSku(best, finish);
-  const leg = computeLegKitRecommendation($("tileAboveCrown").value, cat);
 
   if(!sku){
+    const callScript = buildDraftKingCallScript({mesh, cat, finish, L, W: (W ?? 0), leg});
+
     statusBox.className = "status warn";
     statusBox.innerHTML =
-      `Cap size found: <b>${best.cap}</b>, but the selected finish appears <b>not offered</b> for this size/mesh. Try another finish or recommend custom.` +
-      (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "");
+      `Cap size found: <b>${best.cap}</b>, but the selected finish appears <b>not offered</b> for this size/mesh.` +
+      `<br>Try another finish or request a custom quote.` +
+      (sanity.length ? `<div class="hr" style="margin:10px 0;"></div><b>Quick check:</b><br>• ${sanity.join("<br>• ")}` : "") +
+      `<div class="hr" style="margin:10px 0;"></div>` +
+      `<b>Distributor call script (copy/paste):</b>` +
+      `<pre class="script" id="callScriptBox">${callScript}</pre>`;
   }else{
     statusBox.className = "status ok";
     statusBox.innerHTML =
@@ -1938,7 +2074,7 @@ function runDraftKingRecommendation(){
   }
 
   $("capName").textContent = best.cap;
-  $("capMesh").textContent = mesh === "3/4" ? '3/4" mesh' : '5/8" mesh';
+  $("capMesh").textContent = mesh === "3/4" ? '3/4" mesh' : '5/8" mesh (code required)';
   $("fitRange").textContent = fitText(best);
   $("capFinish").textContent = finishLabel(finish);
 
@@ -1952,6 +2088,10 @@ function runDraftKingRecommendation(){
 
   details.style.display = "";
 
+  const callScript = sku
+    ? `Draft King — Order request\nSKU: ${sku}\nFinish: ${finishLabel(finish)}\nMesh: ${mesh === "5/8" ? '5/8" (code required)' : '3/4" (standard)'}\nCap: ${best.cap}`
+    : buildDraftKingCallScript({mesh, cat, finish, L, W: (W ?? 0), leg});
+
   lastResult = {
     ok:Boolean(sku),
     module:"draftking",
@@ -1962,27 +2102,18 @@ function runDraftKingRecommendation(){
     sku: sku,
     legKit: leg,
     california: $("caCode").checked ? true : null,
-    job:{
-      jobName: $("jobName").value || null,
-      techName: $("techName").value || null,
-      estimate: $("estimatePrice").value || null,
-      internalRef: $("internalRef").value || null
-    },
-    notes:{
-      customer: $("customerNotes").value || null,
-      internal: $("internalNotes").value || null
-    }
+    callScript
   };
 }
 
 /* =========================
-   BUTTON + Enter key runs selector
+   RUN selector
    ========================= */
 function runSelector(){
   const family = $("capFamily").value || "draftking";
 
   $("statusBox").className = "status warn";
-  $("statusBox").innerHTML = `Running selector… <span style="opacity:.75">(mode: <b>${family}</b>)</span>`;
+  $("statusBox").innerHTML = `Running selector… <span style="opacity:.75">(mode: <b>${family === "bigtop" ? "Multi-Flue" : "Single Flue"}</b>)</span>`;
   $("details").style.display = "none";
 
   try{
@@ -2005,66 +2136,13 @@ $("go").addEventListener("click", (e)=>{
 document.addEventListener("keydown", (e)=>{
   if(e.key !== "Enter") return;
   const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
-  const isTextarea = tag === "textarea";
-  if(isTextarea) return;
+  if(tag === "textarea") return;
   if(e.ctrlKey || e.metaKey || e.altKey) return;
   runSelector();
 });
 
 /* =========================
-   RESET (safe, keeps theme)
-   ========================= */
-function resetAll(){
-  localStorage.removeItem(LOGO_KEY);
-  applyLogoFromStorage();
-
-  document.querySelectorAll("input, select, textarea").forEach(el=>{
-    if(el.id === "logoPicker") return;
-
-    if(el.type === "file"){
-      el.value = "";
-      return;
-    }
-    if(el.type === "checkbox"){
-      el.checked = false;
-      return;
-    }
-    if(el.tagName === "SELECT"){
-      el.selectedIndex = 0;
-      return;
-    }
-    el.value = "";
-  });
-
-  $("capFamily").value = "draftking";
-  $("shape").value = "rect";
-  $("mesh").value = "3/4";
-  $("meshOverride").checked = false;
-  $("caCode").checked = false;
-
-  $("bt_finish").value = "stainless";
-  $("bt_hingeRec").checked = false;
-
-  if(dkFinishCtrl) dkFinishCtrl.setSelected("ss_u");
-  if(btFinishCtrl) btFinishCtrl.setSelected("stainless");
-
-  photoData = [];
-  $("thumbs").innerHTML = "";
-  $("bt_screenTarget").value = "";
-  updatePhotoBadge();
-
-  $("jobDetails").open = false;
-  updateJobDropdownSubtitle();
-
-  updateInputsForShape();
-  applyCaliforniaMeshRule();
-  updateCapFamilyUI();
-  clearRecommendationUI();
-}
-$("resetBtn").addEventListener("click", resetAll);
-
-/* =========================
-   COPY / EXPORT
+   COPY actions
    ========================= */
 $("copyStdSku").addEventListener("click", async ()=>{
   const txt = $("skuStdValue").textContent.trim();
@@ -2077,6 +2155,31 @@ $("copyHingeSku").addEventListener("click", async ()=>{
   await navigator.clipboard.writeText(txt);
 });
 
+$("copySkus").addEventListener("click", async ()=>{
+  const parts = [];
+  const std = $("skuStdLine").style.display !== "none" ? $("skuStdValue").textContent.trim() : "";
+  const hing = $("skuHingeLine").style.display !== "none" ? $("skuHingeValue").textContent.trim() : "";
+  if(std && !std.startsWith("—")) parts.push(`Standard SKU: ${std}`);
+  if(hing && !hing.startsWith("—")) parts.push(`Hinged SKU: ${hing}`);
+  if(parts.length === 0 && lastResult?.sku) parts.push(`SKU: ${lastResult.sku}`);
+  if(parts.length === 0){
+    // fallback to call script SKU lines
+    const s = (lastResult?.callScript || "").trim();
+    if(s) parts.push(s);
+  }
+  await navigator.clipboard.writeText(parts.join("\n"));
+});
+
+$("copyCallScript").addEventListener("click", async ()=>{
+  const s = (lastResult?.callScript || "").trim();
+  if(!s){
+    const box = document.getElementById("callScriptBox");
+    if(box) return navigator.clipboard.writeText(box.textContent.trim());
+    return;
+  }
+  await navigator.clipboard.writeText(s);
+});
+
 $("copyAll").addEventListener("click", async ()=>{
   await navigator.clipboard.writeText(buildSummaryText());
 });
@@ -2084,6 +2187,53 @@ $("copySummary").addEventListener("click", async ()=>{
   await navigator.clipboard.writeText(buildSummaryText());
 });
 
+/* =========================
+   RESET (keeps theme)
+   ========================= */
+function resetAll(){
+  localStorage.removeItem(LOGO_KEY);
+  localStorage.removeItem(PREF_KEY);
+  applyLogoFromStorage();
+
+  document.querySelectorAll("input, select, textarea").forEach(el=>{
+    if(el.id === "logoPicker") return;
+    if(el.type === "file"){ el.value = ""; return; }
+    if(el.type === "checkbox"){ el.checked = false; return; }
+    if(el.tagName === "SELECT"){ el.selectedIndex = 0; return; }
+    el.value = "";
+  });
+
+  $("capFamily").value = "draftking";
+  $("shape").value = "rect";
+  $("mesh").value = "3/4";
+  $("meshOverride").checked = false;
+  $("caCode").checked = false;
+  $("rareMeshBlock").open = false;
+
+  $("bt_finish").value = "stainless";
+  $("bt_hingeRec").checked = false;
+  $("bt_slope").checked = false;
+
+  if(dkFinishCtrl) dkFinishCtrl.setSelected("ss_u");
+  if(btFinishCtrl) btFinishCtrl.setSelected("stainless");
+
+  photoData = [];
+  $("thumbs").innerHTML = "";
+  $("bt_screenTarget").value = "";
+
+  updateInputsForShape();
+  applyCaliforniaMeshRule();
+  updateCapFamilyUI();
+  clearRecommendationUI();
+
+  $("jobBlock").open = false;
+  $("jobChev").textContent = "▾";
+}
+$("resetBtn").addEventListener("click", resetAll);
+
+/* =========================
+   EXPORT helpers
+   ========================= */
 function moneyFmt(x){
   const n = Number(String(x||"").replace(/[^0-9.\-]/g,""));
   if(!Number.isFinite(n)) return String(x||"").trim();
@@ -2107,7 +2257,7 @@ function buildSummaryText(){
   if(internalRef) lines.push(`Internal Ref: ${internalRef}`);
 
   if(lastResult){
-    lines.push(`Tool: ${lastResult.module === "bigtop" ? "Big Top (Crown Mount)" : "Draft King (Single Flue)"}`);
+    lines.push(`Mode: ${lastResult.module === "bigtop" ? "Multi-Flue (Crown Mount)" : "Single Flue"}`);
 
     if(lastResult.module === "draftking"){
       if(lastResult.california) lines.push(`Code: California 5/8" Code Compliant`);
@@ -2116,7 +2266,7 @@ function buildSummaryText(){
       lines.push(`Finish: ${finishLabel(lastResult.finish)}`);
       lines.push(`Cap: ${lastResult.cap ?? "Custom recommended"}`);
       lines.push(`SKU: ${lastResult.sku ?? "—"}`);
-      lines.push(`Fit: ${lastResult.fit ?? "—"}`);
+      if(lastResult.fit) lines.push(`Fit: ${lastResult.fit}`);
       lines.push(`Leg kit: ${lastResult.legKit?.label ?? "—"}`);
       if(lastResult.legKit?.note) lines.push(`Leg kit note: ${lastResult.legKit.note}`);
     }else{
@@ -2130,19 +2280,21 @@ function buildSummaryText(){
       lines.push(`Standard SKU: ${lastResult.sku ?? "—"}`);
       if(lastResult.hingeRecommended){
         if(lastResult.hingeHeight != null) lines.push(`Hinged height chosen: ${lastResult.hingeHeight}"`);
-        lines.push(`Hinged SKU (BTH): ${lastResult.hingeSku ?? "—"}`);
+        lines.push(`Hinged SKU: ${lastResult.hingeSku ?? "—"}`);
       }
       if(lastResult.slopeFlag) lines.push(`Note: Crown flagged sloped/uneven.`);
     }
+
+    if(lastResult.callScript) lines.push("\nDistributor Call Script:\n" + lastResult.callScript);
   }else{
     lines.push("No cap selection has been generated yet.");
   }
 
-  lines.push("Pricing: Contact your HY-C distributor with the SKU(s).");
+  lines.push("\nPricing: Contact your HY-C distributor with the SKU(s).");
 
   if(customerNotes) lines.push(`Customer Notes: ${customerNotes}`);
   if(notes) lines.push(`General Notes: ${notes}`);
-  if(internalNotes) lines.push(`Internal Notes: ${internalNotes}`);
+  if(internalNotes) lines.push(`Office Notes: ${internalNotes}`);
   lines.push(`Photos: ${photoData.length} attached`);
 
   return lines.join("\n");
@@ -2184,7 +2336,6 @@ function buildReportHTML(){
   const notes = ($("notes").value || "").trim();
 
   const dateStr = new Date().toLocaleString();
-
   const photoBlocks = photoData.map(p=>`
     <figure style="margin:0; border:1px solid #ddd; border-radius:12px; overflow:hidden;">
       <img src="${p.dataUrl}" alt="${escapeHtml(p.name)}" style="width:100%; height:auto; display:block;">
@@ -2201,7 +2352,9 @@ function buildReportHTML(){
   ` : "";
 
   const logoSrc = localStorage.getItem(LOGO_KEY) || "";
-  const logoBlock = logoSrc ? `<img src="${logoSrc}" alt="HY-C" style="height:32px; width:auto; display:block;">` : `<div style="font-weight:900; color:#b91c1c;">HY-C</div>`;
+  const logoBlock = logoSrc
+    ? `<img src="${logoSrc}" alt="HY-C" style="height:32px; width:auto; display:block;">`
+    : `<div style="font-weight:900; color:#b91c1c;">HY-C</div>`;
 
   const stdSkuText = $("skuStdValue") ? $("skuStdValue").textContent.trim() : "";
   const hingeSkuText = $("skuHingeValue") ? $("skuHingeValue").textContent.trim() : "";
@@ -2248,7 +2401,7 @@ function buildReportHTML(){
           </div>
           <div style="border:1px solid #e5e7eb; background:#fff; border-radius:12px; padding:10px;">
             <div style="font-size:12px; color:#6b7280; font-weight:800;">Mesh</div>
-            <div style="font-size:14px; font-weight:900; color:#111;">${escapeHtml(lastResult.module==="bigtop" ? "Big Top standard" : lastResult.mesh)}</div>
+            <div style="font-size:14px; font-weight:900; color:#111;">${escapeHtml(lastResult.module==="bigtop" ? "Big Top standard" : (lastResult.mesh==="5/8" ? '5/8" (code required)' : '3/4" (standard)'))}</div>
           </div>
         </div>
 
@@ -2258,10 +2411,17 @@ function buildReportHTML(){
             <div style="font-size:14px; font-weight:900; color:#111;">${escapeHtml(stdSkuText || (lastResult.sku ?? "—"))}</div>
           </div>
           <div style="border:1px solid #e5e7eb; background:#fff; border-radius:12px; padding:10px;">
-            <div style="font-size:12px; color:#6b7280; font-weight:800;">Hinged SKU (BTH)</div>
+            <div style="font-size:12px; color:#6b7280; font-weight:800;">Hinged SKU</div>
             <div style="font-size:14px; font-weight:900; color:#111;">${escapeHtml(hingeSkuText || (lastResult.hingeSku ?? "—"))}</div>
           </div>
         </div>
+
+        ${lastResult.callScript ? `
+          <div style="border:1px solid #e5e7eb; background:#fff; border-radius:12px; padding:10px;">
+            <div style="font-size:12px; color:#6b7280; font-weight:800;">Distributor Call Script</div>
+            <pre style="white-space:pre-wrap; margin:8px 0 0; font-size:12px;">${escapeHtml(lastResult.callScript)}</pre>
+          </div>
+        ` : ""}
       </div>
     </div>
   ` : `
@@ -2282,7 +2442,7 @@ function buildReportHTML(){
     ` : ""}
 
     ${internalNotes ? `
-      <h2 style="margin:18px 0 8px; font-size:15px;">Internal Notes (not for customer)</h2>
+      <h2 style="margin:18px 0 8px; font-size:15px;">Office Notes</h2>
       <div style="white-space:pre-wrap; border:1px solid #ddd; border-radius:12px; padding:12px; background:#f3f4f6;">${escapeHtml(internalNotes)}</div>
     ` : ""}
   `;
@@ -2315,6 +2475,16 @@ function buildReportHTML(){
 </body>
 </html>`;
 }
+
+/* =========================
+   Save prefs on key fields
+   ========================= */
+["jobName","techName","estimatePrice","internalRef","customerNotes","internalNotes","notes","tileAboveCrown","len","wid","bt_crownL","bt_crownW","bt_flueAboveCrown"].forEach(id=>{
+  const el = $(id);
+  if(!el) return;
+  el.addEventListener("input", savePrefsDebounced);
+});
+
 </script>
 
 </body>
