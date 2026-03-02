@@ -853,9 +853,9 @@
             </div>
           </div>
           <div>
-            <label for="bt_screenTarget">Calculated screen-to-screen target (auto)</label>
+            <label for="bt_screenTarget">Calculated max screen-to-screen that fits (auto)</label>
             <input id="bt_screenTarget" disabled />
-            <div class="hint">Target = (crown L − 3") × (crown W − 3").</div>
+            <div class="hint">Max that fits = (crown L − 3") × (crown W − 3").</div>
           </div>
         </div>
 
@@ -873,6 +873,12 @@
             <label>&nbsp;</label>
             <div class="hint">Custom limits will appear only if a custom Big Top is recommended.</div>
           </div>
+        </div>
+
+        <!-- NEW: Flue coverage note (no measurements required; warning logic handled in JS) -->
+        <div class="callout" id="btCoverageNote" style="margin-top:10px;">
+          <b>Flue coverage note:</b> This tool ensures the cap fits the crown based on the <b>(crown − 3")</b> rule.
+          It does <b>not</b> verify that a smaller standard size will fit over the flue tile(s). If the recommendation is significantly smaller than the max, verify flue placement before ordering.
         </div>
       </div>
 
@@ -964,6 +970,12 @@
         <div class="kv"><div class="k">Fit / logic</div><div class="v" id="fitRange">—</div></div>
         <div class="kv"><div class="k">Finish</div><div class="v" id="capFinish">—</div></div>
 
+        <!-- NEW: Big Top undersize warning line (hidden unless Big Top + triggered) -->
+        <div class="kv" id="btUnderSizeKV" style="display:none;">
+          <div class="k">Flue coverage</div>
+          <div class="v" id="btUnderSizeMsg">—</div>
+        </div>
+
         <div class="kv">
           <div class="k">SKU(s)</div>
           <div class="v">
@@ -1014,7 +1026,7 @@ function setTheme(mode){
 (function initTheme(){
   const saved = localStorage.getItem(THEME_KEY);
   if(saved === "dark") setTheme("dark");
-  else setTheme("light");
+  else setTheme("light"); // light default (per your rule)
 })();
 document.getElementById("themeToggle").addEventListener("click", ()=>{
   const current = document.documentElement.getAttribute("data-theme") || "light";
@@ -1282,6 +1294,8 @@ function clearRecommendationUI(){
   $("capFinish").textContent = "—";
   $("legKit").textContent = "—";
   $("btCustomLimits").style.display = "none";
+  $("btUnderSizeKV").style.display = "none";
+  $("btUnderSizeMsg").textContent = "—";
   hideSkuLines();
   lastResult = null;
 }
@@ -1353,6 +1367,10 @@ function bt_updateScreenTarget(){
   if(L==null || W==null){ $("bt_screenTarget").value = ""; return; }
   const tL = L - 3;
   const tW = W - 3;
+  if(tL <= 0 || tW <= 0){
+    $("bt_screenTarget").value = `—`;
+    return;
+  }
   $("bt_screenTarget").value = `${tL.toFixed(2)}" x ${tW.toFixed(2)}"`;
 }
 $("bt_crownL").addEventListener("input", bt_updateScreenTarget);
@@ -1368,19 +1386,40 @@ function bt_nextHeight(finish, needed){
   for(const h of heights){ if(needed <= h) return h; }
   return null;
 }
-function bt_pickSmallestThatFits(targetL, targetW){
+
+/**
+ * FIXED to match your rule:
+ * - targetL/targetW is the MAX screen-to-screen that will fit on the crown (after subtract 3").
+ * - Therefore we must select the LARGEST standard size that is <= target in BOTH dimensions.
+ * - (No SKU table changes.)
+ */
+function bt_pickLargestThatFitsWithin(targetL, targetW){
   const [tL,tW] = normalizeLW(targetL, targetW);
   const sorted = BIG_TOP.slice().sort((a,b)=>{
     const aa = a.st[0]*a.st[1];
     const bb = b.st[0]*b.st[1];
-    if(aa!==bb) return aa-bb;
-    return `${a.st[0]}x${a.st[1]}`.localeCompare(`${b.st[0]}x${b.st[1]}`);
+    if(aa!==bb) return bb-aa; // largest first
+    return `${b.st[0]}x${b.st[1]}`.localeCompare(`${a.st[0]}x${a.st[1]}`);
   });
   for(const p of sorted){
     const [sL,sW] = normalizeLW(p.st[0], p.st[1]);
-    if(sL >= tL && sW >= tW) return p;
+    if(sL <= tL && sW <= tW) return p;
   }
   return null;
+}
+
+/**
+ * Dimension-based "undersized risk" warning (your choice):
+ * If either dimension is >= 4" smaller than the max target, warn the tech.
+ */
+function bt_computeUnderSizeWarning(targetL, targetW, recL, recW){
+  const [tL,tW] = normalizeLW(targetL, targetW);
+  const [rL,rW] = normalizeLW(recL, recW);
+  const dL = +(tL - rL).toFixed(2);
+  const dW = +(tW - rW).toFixed(2);
+
+  const risky = (dL >= 4) || (dW >= 4);
+  return { risky, dL, dW, tL, tW, rL, rW };
 }
 
 function computeLegKitRecommendation(tileAbove, shape){
@@ -1405,6 +1444,8 @@ function runBigTopRecommendation(){
 
   hideSkuLines();
   $("btCustomLimits").style.display = "none";
+  $("btUnderSizeKV").style.display = "none";
+  $("btUnderSizeMsg").textContent = "—";
 
   if(crownL==null || crownW==null || flueH==null){
     $("statusBox").className = "status bad";
@@ -1425,7 +1466,9 @@ function runBigTopRecommendation(){
     return;
   }
 
-  const picked = bt_pickSmallestThatFits(targetL, targetW);
+  // FIX: choose the largest standard size that is within the max target.
+  const picked = bt_pickLargestThatFitsWithin(targetL, targetW);
+
   const neededHeight = flueH + 5;
   const chosenHeight = bt_nextHeight(finish, neededHeight);
 
@@ -1448,9 +1491,22 @@ function runBigTopRecommendation(){
     }
   }
 
+  // Dimension undersize warning (no flue footprint inputs needed)
+  const under = bt_computeUnderSizeWarning(targetL, targetW, picked.st[0], picked.st[1]);
+  if(under.risky){
+    $("btUnderSizeKV").style.display = "";
+    $("btUnderSizeMsg").innerHTML =
+      `⚠ <b>Not verified over flues.</b> This standard size is significantly smaller than the max target.` +
+      `<br><span style="opacity:.9">Max target: <b>${under.tL.toFixed(2)}×${under.tW.toFixed(2)}</b> • Recommended: <b>${under.rL}×${under.rW}</b> • Gap: <b>${under.dL}"</b> / <b>${under.dW}"</b></span>` +
+      `<br><span style="opacity:.9">Verify flue placement fits within the screen footprint before ordering.</span>`;
+  }
+
   $("capName").textContent = `Multi-Flue — ${picked.st[0]}x${picked.st[1]} • Height ${chosenHeight}"` + (hingeRec ? ` • Hinged alt (SS only)` : "");
   $("capMesh").textContent = `Big Top mesh (standard)`;
-  $("fitRange").textContent = `Crown: ${crownL}" x ${crownW}" → minus 3": ${targetL.toFixed(2)}" x ${targetW.toFixed(2)}" • Height needed: ${neededHeight.toFixed(1)}"`;
+  $("fitRange").textContent =
+    `Crown: ${crownL}" x ${crownW}" → max target (minus 3"): ${targetL.toFixed(2)}" x ${targetW.toFixed(2)}"` +
+    ` • Height needed: ${neededHeight.toFixed(1)}"`;
+
   $("capFinish").textContent = bigTopFinishLabel(finish);
   $("legKit").textContent = "N/A (Crown mount)";
 
@@ -1459,12 +1515,22 @@ function runBigTopRecommendation(){
 
   $("hingeMaterialNote").style.display = (hingeRec && finish !== "stainless") ? "block" : "none";
 
+  // Status box messaging:
+  // - still show ok if we found a SKU; show warning if missing sku
+  // - add undersize warning text if triggered
+  const baseLine = (standardSku
+    ? `✅ Recommended Draft King Multi-Flue: <b>${picked.st[0]}x${picked.st[1]}</b>`
+    : `Size found, but verify standard SKU in catalog.`);
+  const heightLine = `<br><span style="opacity:.9">Height needed: <b>${neededHeight.toFixed(1)}"</b> → chosen: <b>${chosenHeight}"</b></span>`;
+  const hingeLine =
+    hingeRec ? `<br><span style="opacity:.9">Hinged option: <b>${hingeSku ? "available" : "not available"}</b> (Stainless only)</span>` : "";
+  const hingeMatLine =
+    (hingeRec && finish !== "stainless") ? `<br><span style="color:var(--warn); font-weight:900;">Hinged (BTH) is Stainless only — not copper/black.</span>` : "";
+  const undersizeLine =
+    under.risky ? `<br><span style="color:var(--warn); font-weight:900;">Flue coverage not verified — recommendation is significantly smaller than the max target.</span>` : "";
+
   $("statusBox").className = standardSku ? "status ok" : "status warn";
-  $("statusBox").innerHTML =
-    (standardSku ? `✅ Recommended Draft King Multi-Flue: <b>${picked.st[0]}x${picked.st[1]}</b>` : `Size found, but verify standard SKU in catalog.`) +
-    `<br><span style="opacity:.9">Height needed: <b>${neededHeight.toFixed(1)}"</b> → chosen: <b>${chosenHeight}"</b></span>` +
-    (hingeRec ? `<br><span style="opacity:.9">Hinged option: <b>${hingeSku ? "available" : "not available"}</b> (Stainless only)</span>` : "") +
-    (hingeRec && finish !== "stainless" ? `<br><span style="color:var(--warn); font-weight:900;">Hinged (BTH) is Stainless only — not copper/black.</span>` : "");
+  $("statusBox").innerHTML = baseLine + heightLine + hingeLine + hingeMatLine + undersizeLine;
 
   $("details").style.display = "";
   lastResult = { ok:Boolean(standardSku), module:"bigtop", custom:false };
@@ -1482,6 +1548,7 @@ function runDraftKingRecommendation(){
 
   hideSkuLines();
   $("btCustomLimits").style.display = "none";
+  $("btUnderSizeKV").style.display = "none";
 
   if(L==null || (!cat.startsWith("round") && W==null)){
     $("statusBox").className = "status bad";
@@ -1567,6 +1634,12 @@ function buildSummaryText(){
   lines.push(`Finish: ${$("capFinish").textContent}`);
   lines.push(`Mesh: ${$("capMesh").textContent}`);
   lines.push(`Fit/logic: ${$("fitRange").textContent}`);
+
+  // If Big Top undersize warning visible, include it in summary (so techs don’t miss it)
+  if($("btUnderSizeKV").style.display !== "none"){
+    const txt = $("btUnderSizeMsg").textContent.trim();
+    if(txt) lines.push(`Flue coverage warning: ${txt}`);
+  }
 
   const stdSku = $("skuStdValue").textContent.trim();
   if(stdSku && !stdSku.startsWith("—")) lines.push(`Standard SKU: ${stdSku}`);
@@ -1708,6 +1781,8 @@ function resetAll(){
   $("thumbs").innerHTML = "";
   $("bt_screenTarget").value = "";
   $("btCustomLimits").style.display = "none";
+  $("btUnderSizeKV").style.display = "none";
+  $("btUnderSizeMsg").textContent = "—";
 
   updateInputsForShape();
   applyCaliforniaMeshRule();
@@ -1724,6 +1799,7 @@ updateInputsForShape();
 applyCaliforniaMeshRule();
 updateCapFamilyUI();
 clearRecommendationUI();
+bt_updateScreenTarget();
 </script>
 
 </body>
